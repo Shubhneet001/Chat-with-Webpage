@@ -1,0 +1,9 @@
+# langchain
+langchain
+langchain_core
+langchain_huggingface
+langchain_community
+
+# others
+beautifulsoup4
+python-dotenv
