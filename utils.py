@@ -23,7 +23,7 @@ class WebChatBot:
         self.llm = HuggingFaceEndpoint(
             model="meta-llama/Llama-3.3-70B-Instruct",
             task="text-generation",
-            temperature=0.3
+            temperature=0.7
         )
         self.model = ChatHuggingFace(llm=self.llm)
 
