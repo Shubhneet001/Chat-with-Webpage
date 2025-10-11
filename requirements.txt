@@ -4,8 +4,10 @@ langchain_core
 langchain_huggingface
 langchain_community
 
+# fastapi
+fastapi
+uvicorn
+
 # others
 beautifulsoup4
 python-dotenv
-fastapi
-uvicorn

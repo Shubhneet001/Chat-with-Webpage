@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Chatbot Assistant</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Welcome Screen -->
+  <div id="welcomeScreen" class="welcome-screen">
+    <div class="welcome-content">
+      <div class="logo-container">
+        <div class="logo-circle">
+          <svg class="robot-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="4" y="8" width="16" height="12" rx="2"></rect>
+            <path d="M8 12h.01M16 12h.01"></path>
+            <path d="M8 16h8"></path>
+            <path d="M12 8V5"></path>
+            <circle cx="12" cy="3" r="1"></circle>
+          </svg>
+        </div>
+      </div>
+      <h1 class="welcome-title">Web Chat Assistant</h1>
+      <p class="welcome-subtitle">Analyze and chat with any webpage using AI</p>
+      
+      <div class="features">
+        <div class="feature-item">
+          <span class="feature-icon">🧠</span>
+          <span class="feature-text">Smart Analysis</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">💬</span>
+          <span class="feature-text">Natural Conversation</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">⚡</span>
+          <span class="feature-text">Instant Answers</span>
+        </div>
+      </div>
+
+      <button id="startBtn" class="start-button">
+        <span class="button-content">
+          <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7"></path>
+          </svg>
+          Start Analyzing Current Page
+        </span>
+      </button>
+
+      <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Screen -->
+  <div id="loadingScreen" class="loading-screen" style="display: none;">
+    <div class="loading-content">
+      <div class="loader">
+        <div class="loader-circle"></div>
+        <div class="loader-circle"></div>
+        <div class="loader-circle"></div>
+      </div>
+      <h2 class="loading-title">Analyzing Webpage</h2>
+      <p class="loading-text" id="loadingText">Processing content...</p>
+      <div class="loading-bar">
+        <div class="loading-progress" id="loadingProgress"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat Interface -->
+  <div id="chatInterface" class="chat-interface" style="display: none;">
+    <div class="chat-header">
+      <div class="header-left">
+        <div class="status-indicator"></div>
+        <div class="header-info">
+          <h2 class="header-title">Chat Assistant</h2>
+          <p class="header-subtitle" id="currentPageTitle">Ready to help</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="themeToggle" class="icon-button" title="Toggle Theme">
+          <svg class="theme-icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="theme-icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        <button id="reloadBtn" class="icon-button" title="Load Current Page">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
+            <path d="M21 3v5h-5"></path>
+            <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
+            <path d="M3 21v-5h5"></path>
+          </svg>
+        </button>
+        <button id="resetBtn" class="icon-button" title="Reset History">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 6h18"></path>
+            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="chat-messages" id="chatMessages">
+      <div class="empty-chat">
+        <div class="empty-icon">💭</div>
+        <p>Start a conversation about this page</p>
+      </div>
+    </div>
+
+    <div class="chat-input-container">
+      <div class="input-wrapper">
+        <textarea 
+          id="messageInput" 
+          class="message-input" 
+          placeholder="Ask anything about this page..."
+          rows="1"
+        ></textarea>
+        <button id="sendBtn" class="send-button">
+          <svg class="send-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 2L11 13"></path>
+            <path d="M22 2L15 22L11 13L2 9L22 2Z"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="content.js"></script>
+</body>
+</html>
