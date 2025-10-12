@@ -1,183 +1,116 @@
-# 🧠 Web Chatbot
+# Web Chatbot Assistant
 
-An AI-powered Chrome extension that helps you **analyze and chat with any webpage** in real time.  
-This project integrates a **FastAPI backend** (for webpage processing and AI responses) with a **Chrome side-panel extension** that provides a modern chat interface.
-
----
-
-## 🚀 Features
-
-- 🔗 **Load any webpage:** Scrape and process webpage content automatically.  
-- 💬 **Ask questions:** Get concise, HTML-formatted answers from the AI using context from the page.  
-- 🧠 **Persistent memory:** Maintains conversation history across queries for contextual answers.  
-- 🧹 **Reset memory:** Start fresh with one click.  
-- 🧩 **Chrome side panel:** Easy-to-use UI that works directly within the browser.
+A Chrome extension that allows users to **analyze and chat with any webpage** using AI.
 
 ---
 
-## 🧰 Project Structure
+## Overview
+
+This project provides:
+- A **Chrome side-panel extension** with a simple chat UI.
+- A **FastAPI backend** that loads webpages, indexes content, and generates AI-based answers.
+- Support for memory, contextual retrieval, and concise HTML-formatted responses.
+
+---
+
+## Project Structure
 
 ```
 
-├── .gitignore
-├── README.md
-├── chrome-extension
+├── chrome-extension/
 │   ├── background.js
 │   ├── content.js
 │   ├── icons/
-│   │   ├── icon16.png
-│   │   ├── icon48.png
-│   │   └── icon128.png
 │   ├── index.html
 │   ├── manifest.json
 │   └── styles.css
-├── experiments.ipynb
 ├── main.py
+├── utils.py
 ├── requirements.txt
-└── utils.py
+└── README.md
 
 ````
 
 ---
 
-## ⚙️ Backend Setup (FastAPI)
+## Demo Images
 
-### 1️⃣ Prerequisites
-- Python 3.10+
-- [Hugging Face Access Token](https://huggingface.co/settings/tokens)
-- Internet connection (for Hugging Face model endpoints)
 
-### 2️⃣ Installation
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/bac2aaaa-bb11-4b91-81e7-dd6269ff4d52" width="45%" />
+  <img src="https://github.com/user-attachments/assets/7dc7e8c7-f1f3-42f3-b733-8a13dffae324" width="45%" />
+</p>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/5ec8d9f0-7cbf-48e3-8b69-eb260b2590bd" width="45%" />
+  <img src="https://github.com/user-attachments/assets/0cddfc0b-507a-49ab-9c68-2e17aa17152f" width="45%" />
+</p>
 
+---
+
+## Backend Setup (FastAPI)
+
+### Prerequisites
+- Python 3.11 or later  
+- A [Hugging Face Access Token](https://huggingface.co/settings/tokens)
+
+### Installation
 ```bash
-# Clone the repository
 git clone https://github.com/Shubhneet001/Chat-with-Webpage.git
-cd Chat-with-Webpage
-
-# Create virtual environment
+cd Chat-with-webpage
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
+venv\Scripts\activate     # or source venv/bin/activate on mac
 pip install -r requirements.txt
 ````
 
-### 3️⃣ Setup Environment
+### Environment Setup
 
-Create a `.env` file in the project root:
+Create a `.env` file:
 
 ```
-HF_TOKEN="hf_access_token"
+HF_TOKEN=your_hf_api_token
 ```
 
-### 4️⃣ Run the FastAPI server
+### Run Server
 
 ```bash
 uvicorn main:app --reload
 ```
 
-By default, the API will run at:
-👉 **[http://127.0.0.1:8000](http://127.0.0.1:8000)**
+API will be available at `http://127.0.0.1:8000`.
 
 ---
 
-## 🧩 API Endpoints
+## API Endpoints
 
-| Endpoint         | Method | Description                                                              |
-| ---------------- | ------ | ------------------------------------------------------------------------ |
-| `/load_webpage`  | POST   | Loads and indexes a webpage. Requires `url` in JSON body.                |
-| `/ask`           | POST   | Asks a question about the loaded webpage. Requires `query` in JSON body. |
-| `/reset_history` | POST   | Clears the chatbot's memory.                                             |
+| Endpoint         | Method | Description                                                |
+| ---------------- | ------ | ---------------------------------------------------------- |
+| `/load_webpage`  | POST   | Loads and indexes a webpage (requires `"url"`).            |
+| `/ask`           | POST   | Ask a question about the loaded page (requires `"query"`). |
+| `/reset_history` | POST   | Clears the chatbot’s memory.                               |
 
-### Example Request
+Example:
 
 ```bash
 curl -X POST "http://127.0.0.1:8000/load_webpage" \
-     -H "Content-Type: application/json" \
-     -d '{"url": "https://example.com"}'
+-H "Content-Type: application/json" \
+-d '{"url": "https://example.com"}'
 ```
 
 ---
 
-## 🧱 Chrome Extension Setup
+## Chrome Extension Setup
 
-### 1️⃣ Open Chrome Extensions
-
-* Go to `chrome://extensions/`
-* Enable **Developer mode** (top right)
-* Click **Load unpacked**
-* Select the `chrome-extension` folder from this project
-
-### 2️⃣ Run the Extension
-
-* Click the **puzzle icon** → **Web Chatbot Assistant**
-* The chatbot will appear in the **side panel**
-
-### 3️⃣ Configuration
-
-* Make sure your **FastAPI server is running**
-* The extension’s JavaScript files should call the backend at `http://127.0.0.1:8000`
+1. Open **Chrome** → go to `chrome://extensions/`
+2. Enable **Developer Mode**
+3. Click **Load unpacked** and select the `chrome-extension` folder
+4. Ensure your FastAPI backend is running before using the extension
 
 ---
 
-## 🧠 How It Works
+## Technical Overview
 
-1. **Webpage Loading:**
-   The backend fetches the webpage using `WebBaseLoader`, cleans HTML using `BeautifulSoup`, and splits it into chunks.
-
-2. **Vectorization:**
-   Text chunks are converted into embeddings using `sentence-transformers/all-MiniLM-L6-v2` and stored in FAISS.
-
-3. **Retrieval & Generation:**
-   When you ask a question, relevant chunks are retrieved using **MMR retriever + MultiQueryRetriever**, and a **Llama-3.3-70B-Instruct** model (via Hugging Face Endpoint) generates a concise HTML-formatted answer.
-
-4. **Memory:**
-   The chatbot uses both **buffer memory** (for conversation history) and **vector store memory** (for semantic recall).
-
----
-
-## 🧩 Technologies Used
-
-**Backend:**
-
-* FastAPI
-* LangChain
-* HuggingFace (Llama 3.3, Sentence Transformers)
-* FAISS (Vector Database)
-* BeautifulSoup (HTML Parsing)
-
-**Frontend (Extension):**
-
-* HTML, CSS, JavaScript
-* Chrome Side Panel API
-* REST API integration
-
----
-
-## 📚 Example Workflow
-
-1. Open the Chrome extension
-2. Enter the webpage URL → `Load Webpage`
-3. Ask: “Summarize this article” or “Who is the author?”
-4. The AI will analyze and respond contextually.
-
----
-
-## 🧩 Troubleshooting
-
-| Issue                        | Possible Fix                                   |
-| ---------------------------- | ---------------------------------------------- |
-| ❌ `"Webpage not loaded yet"` | Call `/load_webpage` before `/ask`.            |
-| ❌ `"Failed to answer query"` | Check if Hugging Face token is valid.          |
-| ⚠️ CORS errors in Chrome     | Confirm CORS settings in `main.py`.            |
-| 🕓 Slow responses            | Use smaller chunk sizes or a faster LLM model. |
-
----
-
-## 🧑‍💻 Future Improvements
-
-* 🔒 Authentication for backend access
-* 🌐 Deploy FastAPI on Render / AWS
-* 💾 Local caching of webpage vectors
-* 🧠 Option to switch between LLMs (Llama, Mistral, etc.)
-
+* **Web Scraping:** `WebBaseLoader` and `BeautifulSoup` for HTML cleaning
+* **Embeddings:** `sentence-transformers/all-MiniLM-L6-v2`
+* **LLM:** `meta-llama/Llama-3.3-70B-Instruct` (via Hugging Face Endpoint)
+* **Retrieval:** FAISS + MMR + MultiQueryRetriever
+* **Memory:** Combined short-term (buffer) and long-term (vector) memory
